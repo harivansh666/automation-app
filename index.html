@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoHotkey Script Runner</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Vaccination Form Automation</h1>
+        <p>Enter Tag IDs and run the AutoHotkey script</p>
+      </header>
+
+      <div class="input-section">
+        <div class="form-group">
+          <label for="tagIds">Tag IDs (one per line):</label>
+          <textarea
+            id="tagIds"
+            placeholder="Enter Tag IDs, one per line&#10;Example:&#10;102294708797&#10;102295388035&#10;130023047398"
+            rows="15"
+          ></textarea>
+        </div>
+
+        <div class="button-group">
+          <button id="runBtn" class="btn btn-primary">Run Script (F1)</button>
+          <button id="stopBtn" class="btn btn-danger">Stop Script (F2)</button>
+          <button id="clearBtn" class="btn btn-secondary">Clear</button>
+          <button id="loadSampleBtn" class="btn btn-outline">
+            Load Sample Data
+          </button>
+        </div>
+      </div>
+
+      <div class="status-section">
+        <h3>Status</h3>
+        <div id="status" class="status">Ready</div>
+        <div id="progress" class="progress"></div>
+      </div>
+
+      <div class="instructions">
+        <h3>Instructions:</h3>
+        <ul>
+          <li>Enter Tag IDs in the text area (one per line)</li>
+          <li>Click "Run Script" or press F1 to start automation</li>
+          <li>Make sure the vaccination form window is open and focused</li>
+          <li>Press F2 or click "Stop Script" to stop the automation</li>
+          <li>
+            The script will automatically fill the form for all provided Tag IDs
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

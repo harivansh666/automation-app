@@ -1,0 +1,58 @@
+{
+  "name": "vaccination-automation",
+  "version": "1.0.0",
+  "description": "AutoHotkey Script Runner for Vaccination Forms",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-portable": "electron-builder --win portable",
+    "dist": "npm run build"
+  },
+  "build": {
+    "appId": "com.yourcompany.vaccination-automation",
+    "productName": "Vaccination Automation",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist",
+      "!build",
+      "!node_modules/7zip-bin/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.0"
+  },
+  "dependencies": {
+    "node-powershell": "^4.0.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
