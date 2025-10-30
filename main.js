@@ -5,6 +5,26 @@ const fs = require("fs");
 
 let mainWindow;
 
+// Add this function to handle paths correctly in both dev and production
+function getAppPath() {
+  if (app.isPackaged) {
+    // In production, use resources path
+    return path.dirname(app.getPath("exe"));
+  } else {
+    // In development, use current directory
+    return __dirname;
+  }
+}
+
+function getScriptsPath() {
+  const appPath = getAppPath();
+  if (app.isPackaged) {
+    return path.join(appPath, "resources", "scripts");
+  } else {
+    return path.join(__dirname, "scripts");
+  }
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
@@ -16,7 +36,14 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadFile("index.html");
+  // Load the correct HTML file based on environment
+  if (app.isPackaged) {
+    mainWindow.loadFile(
+      path.join(getAppPath(), "resources", "app.asar", "index.html")
+    );
+  } else {
+    mainWindow.loadFile("index.html");
+  }
 
   if (process.argv.includes("--dev")) {
     mainWindow.webContents.openDevTools();
@@ -118,14 +145,15 @@ ipcMain.handle("run-autohotkey-script", async (event, tagIDs) => {
           batches.length,
           isLastBatch
         );
+
+        // Use the corrected scripts path
+        const scriptsDir = getScriptsPath();
         const scriptPath = path.join(
-          __dirname,
-          "scripts",
+          scriptsDir,
           `vaccination-batch-${batchIndex + 1}.ahk`
         );
 
         // Ensure scripts directory exists
-        const scriptsDir = path.dirname(scriptPath);
         if (!fs.existsSync(scriptsDir)) {
           fs.mkdirSync(scriptsDir, { recursive: true });
         }
@@ -136,6 +164,11 @@ ipcMain.handle("run-autohotkey-script", async (event, tagIDs) => {
           `AHK script created for batch ${batchIndex + 1}:`,
           scriptPath
         );
+
+        // Verify file was created
+        if (!fs.existsSync(scriptPath)) {
+          throw new Error(`Script file was not created: ${scriptPath}`);
+        }
 
         // Run the AHK script and wait for it to complete
         await runAHKScript(ahkExecutable, scriptPath, batchIndex + 1);
@@ -196,6 +229,14 @@ ipcMain.handle("run-autohotkey-script", async (event, tagIDs) => {
 function runAHKScript(ahkExecutable, scriptPath, batchNumber) {
   return new Promise((resolve, reject) => {
     console.log(`Starting AHK script for batch ${batchNumber}`);
+    console.log(`Script path: ${scriptPath}`);
+    console.log(`File exists: ${fs.existsSync(scriptPath)}`);
+
+    // Verify the script file exists before running
+    if (!fs.existsSync(scriptPath)) {
+      reject(new Error(`Script file not found: ${scriptPath}`));
+      return;
+    }
 
     let ahkProcess = spawn(ahkExecutable, [scriptPath]);
 
@@ -273,9 +314,11 @@ ${tagIDs.map((id) => `"${id}"`).join(",\n ")}
 ; Main automation function
 RunAutomation() {
 ; Show message that script is starting
-result := MsgBox("Batch ${batchIndex + 1} of ${totalBatches}\\n\\nProcessing ${
+result := MsgBox("Batch ${
+    batchIndex + 1
+  } of ${totalBatches}\\\\n\\\\nProcessing ${
     tagIDs.length
-  } tags\\n\\nScript starting in 3 seconds...\\n\\nPress OK to continue or Cancel to stop.", "Batch ${
+  } tags\\\\n\\\\nScript starting in 3 seconds...\\\\n\\\\nPress OK to continue or Cancel to stop.", "Batch ${
     batchIndex + 1
   } Starting", "OKCancel T3")
 
@@ -342,7 +385,7 @@ result := MsgBox("Batch ${batchIndex + 1} of ${totalBatches}\\n\\nProcessing ${
         ; Show progress
         ToolTip("Batch ${
           batchIndex + 1
-        }/${totalBatches}\\nTag " index "/" TagIDs.Length "\\n" tagID)
+        }/${totalBatches}\\\\nTag " index "/" TagIDs.Length "\\\\n" tagID)
         Sleep(500)
         ToolTip()
     }

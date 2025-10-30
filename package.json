@@ -5,10 +5,15 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder",
-    "build-win": "electron-builder --win",
-    "build-portable": "electron-builder --win portable",
-    "dist": "npm run build"
+    "dev": "electron . --dev",
+    "build": "npm run clean && electron-builder",
+    "build-win": "npm run clean && electron-builder --win",
+    "build-portable": "npm run clean && electron-builder --win portable",
+    "dist": "npm run build",
+    "clean": "node -e \"const fs = require('fs'); if(fs.existsSync('dist')) fs.rmSync('dist', { recursive: true, force: true }); console.log('Cleaned dist directory')\"",
+    "prebuild": "npm run clean",
+    "kill-processes": "taskkill /f /im electron.exe /t 2>nul || exit 0 && taskkill /f /im AutoHotkey64.exe /t 2>nul || exit 0 && taskkill /f /im AutoHotkey.exe /t 2>nul || exit 0",
+    "full-clean": "npm run kill-processes && npm run clean && rmdir /s /q node_modules 2>nul || true"
   },
   "build": {
     "appId": "com.yourcompany.vaccination-automation",
@@ -16,11 +21,29 @@
     "directories": {
       "output": "dist"
     },
+    "extraResources": [
+      {
+        "from": "scripts",
+        "to": "scripts"
+      },
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
     "files": [
       "**/*",
+      "!**/*.map",
+      "!*.log",
+      "!*.md",
+      "!build.js",
+      "!clean-build.*",
       "!dist",
       "!build",
-      "!node_modules/7zip-bin/**/*"
+      "!node_modules/7zip-bin/**/*",
+      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!node_modules/*.d.ts",
+      "!node_modules/.bin"
     ],
     "win": {
       "target": [
@@ -43,7 +66,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
     }
   },
   "devDependencies": {
