@@ -1,42 +1,44 @@
 ; AutoHotkey v2 Script for Vaccination Form Automation
 ; Batch 1 of 2 - 25 tags
+; Village: mandi
 ; Updated with Campaign selection and Village selection
 
 ; Array of Tag IDs from user input
 TagIDs := [
-    "102294697891",
-    "102294697971",
-    "102294697526",
-    "102294698393",
-    "102294697685",
-    "102294697641",
-    "102294697878",
-    "102294697721",
-    "102294698371",
-    "102294697481",
-    "102294697982",
-    "102294697880",
-    "130011303644",
-    "130011303622",
-    "130011303677",
-    "130011303688",
-    "130011303633",
-    "130011303666",
-    "130011303030",
-    "130011303655",
-    "102294699272",
-    "102294699294",
-    "102294709040",
-    "102294698883",
-    "102294699226"
+"102294708797",
+ "102294708798",
+ "102294708799",
+ "102294708800",
+ "102294708801",
+ "102294708802",
+ "102294708803",
+ "102294708804",
+ "102294708805",
+ "102294708806",
+ "102294708807",
+ "102294708808",
+ "102294708809",
+ "102294708810",
+ "102294708811",
+ "102294708812",
+ "102294708813",
+ "102294708814",
+ "102294708815",
+ "102294708816",
+ "102294708817",
+ "102294708818",
+ "102294708819",
+ "102294708820",
+ "102294708821"
 ]
+
+; Village name from user input
+VillageName := "mandi"
 
 ; Main automation function
 RunAutomation() {
-    ; Show message that script is starting
-    result := MsgBox(
-        "Batch 1 of 2\n\nProcessing 25 tags\n\nScript starting in 3 seconds...\n\nPress OK to continue or Cancel to stop.",
-        "Batch 1 Starting", "OKCancel T3")
+; Show message that script is starting
+result := MsgBox("Batch 1 of 2\n\nProcessing 25 tags\nVillage: " VillageName "\n\nScript starting in 3 seconds...\n\nPress OK to continue or Cancel to stop.", "Batch 1 Starting", "OKCancel T3")
 
     if (result = "Cancel") {
         MsgBox("Automation cancelled by user.", "Cancelled", "T2")
@@ -46,17 +48,17 @@ RunAutomation() {
     Sleep(3000)
 
     ; Step 1: Click on Campaign radio button (instead of "Without Campaign")
-    Click(245, 288)
+    Click(273, 274)
     Sleep(1000)
 
     ; Step 3: Click on "FMD ROUND 6 JAL" and select it
-    Click(578, 334)
+    Click(690, 363)
     Sleep(500)
     Send("{Tab 1}")
 
-    ; Step 4: Click on "Select Village" and type "tehang"
+    ; Step 4: Click on "Select Village" and type the village name
     Sleep(500)
-    Send("tehang")
+    Send(VillageName)
     Sleep(500)
     Send("{Enter}")
     Sleep(2000)
@@ -67,25 +69,23 @@ RunAutomation() {
     ; Step 5: Process all Tag IDs one by one
     for index, tagID in TagIDs {
         ; Double-click at specified coordinates to focus on tag field
-        Click(1200, 542)
+        Click(1655, 599)
         Sleep(500)
 
-        if (tagID = "102294697971") {
-            Click(1238, 775)
-            Sleep(300)
-            Send("{Down 2}")
-            Send("{Enter}")
-            Sleep(300)
-            Click(1200, 542)
-            Sleep(500)
-        }
+     if (tagID = "102294708798") {
+        Click(1497, 851)
+        Sleep(300)
+        Send("{Down 2}")
+        Send("{Enter}")
+        Sleep(300)
+        Click(1655, 599)
+        Sleep(500)
+    }
 
         ; Clear the field
         Send("^a")
         Sleep(200)
-        Send("{Del}")
-        Sleep(300)
-
+        
         ; Enter current tag ID
         Send(tagID)
         Sleep(300)
@@ -99,23 +99,23 @@ RunAutomation() {
         Sleep(800)
 
         ; Show progress
-        ToolTip("Batch 1/2\nTag " index "/" TagIDs.Length "\n" tagID)
+        ToolTip("Batch 1/2\nVillage: " VillageName "\nTag " index "/" TagIDs.Length "\n" tagID)
         Sleep(500)
         ToolTip()
     }
 
     ; After finishing all tags - Press Tab 3 times then Space
     Send("{Tab 2}")
-    Sleep(800)
+    Sleep(300)
     Send("{Space}")
-    Sleep(400)
+    Sleep(200)
 
     ; Repeat Tab + Space for the same number of tags in the array
     loop TagIDs.Length - 2 {
         Send("{Tab}")
-        Sleep(200)
+        Sleep(100)
         Send("{Space}")
-        Sleep(200)
+        Sleep(100)
 
         ; Show progress for the Tab+Space sequence
         ToolTip("Tab+Space sequence: " A_Index "/" (TagIDs.Length - 2))
@@ -135,34 +135,34 @@ RunAutomation()
 ; Hotkey alternatives
 F1::
 {
-    RunAutomation()
-    return
+RunAutomation()
+return
 }
 
 ; Emergency stop hotkey
 F2::
 {
-    MsgBox("Stopping automation...", "Emergency Stop", "T1")
-    ExitApp
-    return
+MsgBox("Stopping automation...", "Emergency Stop", "T1")
+ExitApp
+return
 }
 
 ; Emergency pause hotkey
 F3::
 {
-    Pause -1
-    return
+Pause -1
+return
 }
 
 ; Press F6 to process a single specific tag ID (for testing)
 F6::
 {
-    ; Get tag ID from user input
-    tagInput := InputBox("Enter Tag ID:", "Single Tag Processing")
-    if (tagInput.Result = "OK" && tagInput.Value != "") {
-        ; Double-click at specified coordinates to focus
-        Click(1649, 632, 2)
-        Sleep(500)
+; Get tag ID from user input
+tagInput := InputBox("Enter Tag ID:", "Single Tag Processing")
+if (tagInput.Result = "OK" && tagInput.Value != "") {
+; Double-click at specified coordinates to focus
+Click(1649, 632, 2)
+Sleep(500)
 
         ; Clear the field
         Send("^a")

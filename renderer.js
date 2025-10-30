@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   const tagIdsTextarea = document.getElementById("tagIds");
+  const villageInput = document.getElementById("villageInput");
   const runBtn = document.getElementById("runBtn");
   const stopBtn = document.getElementById("stopBtn");
   const clearBtn = document.getElementById("clearBtn");
@@ -47,8 +48,9 @@ document.addEventListener("DOMContentLoaded", function () {
     ).join("\n");
 
     tagIdsTextarea.value = sampleData;
+    villageInput.value = "tehang"; // Set default village name
     updateStatus(
-      `Loaded 50 sample tags. Will be processed in 2 batches of 25.`,
+      `Loaded 50 sample tags for village 'tehang'. Will be processed in 2 batches of 25.`,
       "info"
     );
   });
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Clear textarea
   clearBtn.addEventListener("click", function () {
     tagIdsTextarea.value = "";
+    villageInput.value = "";
     updateStatus("Text area cleared.", "info");
     hideBatchProgress();
   });
@@ -63,6 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Run script
   runBtn.addEventListener("click", async function () {
     const tagIdsText = tagIdsTextarea.value.trim();
+    const villageName = villageInput.value.trim();
+
+    console.log("Village name:", villageName); // Debug log
+
+    // Validate village name
+    if (!villageName) {
+      updateStatus("Please enter a village name.", "error");
+      return;
+    }
 
     if (!tagIdsText) {
       updateStatus("Please enter at least one Tag ID.", "error");
@@ -84,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalBatches = Math.ceil(tagIDs.length / batchSize);
 
     updateStatus(
-      `Starting automation for ${tagIDs.length} tags (${totalBatches} batches)...`,
+      `Starting automation for ${tagIDs.length} tags (${totalBatches} batches) for village: ${villageName}...`,
       "info"
     );
     runBtn.disabled = true;
@@ -95,9 +107,17 @@ document.addEventListener("DOMContentLoaded", function () {
     showBatchProgress(totalBatches, tagIDs.length);
 
     try {
-      const result = await window.electronAPI.runAutohotkeyScript(tagIDs);
+      console.log("Calling runAutohotkeyScript with:", {
+        tagIDs: tagIDs.length,
+        villageName: villageName,
+      });
+
+      const result = await window.electronAPI.runAutohotkeyScript(
+        tagIDs,
+        villageName
+      );
       updateStatus(
-        `✅ Script completed! Processed ${result.totalTags} tags in ${result.totalBatches} batches.`,
+        `✅ Script completed! Processed ${result.totalTags} tags in ${result.totalBatches} batches for village: ${result.villageName}.`,
         "success"
       );
     } catch (error) {
@@ -212,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function () {
     submissionInfo.innerHTML = `
             <p><strong>Batch ${data.batchNumber} of ${data.totalBatches} completed!</strong></p>
             <p>✅ Processed ${data.completedTags} of ${data.totalTags} total tags</p>
+            <p>🏠 Village: ${villageInput.value}</p>
             <p>📝 Next batch: ${data.nextBatchSize} tags waiting</p>
             <div class="important-note">
                 <strong>Important:</strong> You must manually submit the current 25 tags on the website before continuing.
@@ -221,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Update status to show manual submission required
     updateStatus(
-      `⏳ Batch ${data.batchNumber} completed. Waiting for manual submission...`,
+      `⏳ Batch ${data.batchNumber} completed for village '${villageInput.value}'. Waiting for manual submission...`,
       "warning"
     );
   }
@@ -232,7 +253,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initialize
   stopBtn.disabled = true;
-  updateStatus('Ready. Enter Tag IDs and click "Run Script".', "info");
+  updateStatus(
+    'Ready. Enter Village name and Tag IDs, then click "Run Script".',
+    "info"
+  );
 
   // Check AutoHotkey on startup
   window.electronAPI

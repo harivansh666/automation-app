@@ -37,6 +37,17 @@ app.on("activate", () => {
   }
 });
 
+// **FIX: Get correct scripts directory path for both dev and production**
+function getScriptsDirectory() {
+  if (app.isPackaged) {
+    // Production: scripts are in extraResources
+    return path.join(process.resourcesPath, "scripts");
+  } else {
+    // Development: scripts are in project root
+    return path.join(__dirname, "scripts");
+  }
+}
+
 // Function to find AutoHotkey executable
 async function findAutoHotkey() {
   return new Promise((resolve, reject) => {
@@ -87,18 +98,33 @@ function splitTagsIntoBatches(tagIDs, batchSize = 25) {
 let manualSubmissionResolvers = [];
 
 // IPC handlers for AutoHotkey operations
-ipcMain.handle("run-autohotkey-script", async (event, tagIDs) => {
+ipcMain.handle("run-autohotkey-script", async (event, tagIDs, villageName) => {
   return new Promise(async (resolve, reject) => {
     try {
+      // Validate village name
+      if (!villageName || villageName.trim() === "") {
+        reject(new Error("Village name is required"));
+        return;
+      }
+
       // Split tags into batches of 25
       const batches = splitTagsIntoBatches(tagIDs, 25);
       console.log(`Split ${tagIDs.length} tags into ${batches.length} batches`);
+      console.log(`Village name: ${villageName}`);
 
       // Find AutoHotkey executable
       const ahkExecutable = await findAutoHotkey();
 
       let completedBatches = 0;
       let totalBatches = batches.length;
+
+      // **FIX: Get correct scripts directory**
+      const scriptsDir = getScriptsDirectory();
+
+      // **FIX: Ensure scripts directory exists**
+      if (!fs.existsSync(scriptsDir)) {
+        fs.mkdirSync(scriptsDir, { recursive: true });
+      }
 
       // Process each batch
       for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
@@ -108,27 +134,23 @@ ipcMain.handle("run-autohotkey-script", async (event, tagIDs) => {
         console.log(
           `Processing batch ${batchIndex + 1}/${batches.length} with ${
             currentBatch.length
-          } tags`
+          } tags for village: ${villageName}`
         );
 
-        // Create the AHK script for current batch
+        // Create the AHK script for current batch with village name
         const ahkScript = generateAHKScript(
           currentBatch,
           batchIndex,
           batches.length,
-          isLastBatch
-        );
-        const scriptPath = path.join(
-          __dirname,
-          "scripts",
-          `vaccination-batch-${batchIndex + 1}.ahk`
+          isLastBatch,
+          villageName
         );
 
-        // Ensure scripts directory exists
-        const scriptsDir = path.dirname(scriptPath);
-        if (!fs.existsSync(scriptsDir)) {
-          fs.mkdirSync(scriptsDir, { recursive: true });
-        }
+        // **FIX: Use the correct scripts directory**
+        const scriptPath = path.join(
+          scriptsDir,
+          `vaccination-batch-${batchIndex + 1}.ahk`
+        );
 
         // Write the AHK script file
         fs.writeFileSync(scriptPath, ahkScript, "utf8");
@@ -184,6 +206,7 @@ ipcMain.handle("run-autohotkey-script", async (event, tagIDs) => {
         success: true,
         totalBatches: batches.length,
         totalTags: tagIDs.length,
+        villageName: villageName,
       });
     } catch (error) {
       console.error("Error in run-autohotkey-script:", error);
@@ -259,10 +282,20 @@ ipcMain.handle("check-autohotkey", async (event) => {
   }
 });
 
-// NEW AHK script generator based on your working script
-function generateAHKScript(tagIDs, batchIndex, totalBatches, isLastBatch) {
+// NEW AHK script generator with village name parameter
+function generateAHKScript(
+  tagIDs,
+  batchIndex,
+  totalBatches,
+  isLastBatch,
+  villageName
+) {
+  // Escape any special characters in village name for AHK
+  const escapedVillageName = villageName.replace(/"/g, '""');
+
   return `; AutoHotkey v2 Script for Vaccination Form Automation
 ; Batch ${batchIndex + 1} of ${totalBatches} - ${tagIDs.length} tags
+; Village: ${escapedVillageName}
 ; Updated with Campaign selection and Village selection
 
 ; Array of Tag IDs from user input
@@ -270,12 +303,15 @@ TagIDs := [
 ${tagIDs.map((id) => `"${id}"`).join(",\n ")}
 ]
 
+; Village name from user input
+VillageName := "${escapedVillageName}"
+
 ; Main automation function
 RunAutomation() {
 ; Show message that script is starting
 result := MsgBox("Batch ${batchIndex + 1} of ${totalBatches}\\n\\nProcessing ${
     tagIDs.length
-  } tags\\n\\nScript starting in 3 seconds...\\n\\nPress OK to continue or Cancel to stop.", "Batch ${
+  } tags\\nVillage: " VillageName "\\n\\nScript starting in 3 seconds...\\n\\nPress OK to continue or Cancel to stop.", "Batch ${
     batchIndex + 1
   } Starting", "OKCancel T3")
 
@@ -287,17 +323,17 @@ result := MsgBox("Batch ${batchIndex + 1} of ${totalBatches}\\n\\nProcessing ${
     Sleep(3000)
 
     ; Step 1: Click on Campaign radio button (instead of "Without Campaign")
-    Click(245, 288)
+    Click(273, 274)
     Sleep(1000)
 
     ; Step 3: Click on "FMD ROUND 6 JAL" and select it
-    Click(578, 334)
+    Click(690, 363)
     Sleep(500)
     Send("{Tab 1}")
 
-    ; Step 4: Click on "Select Village" and type "tehang"
+    ; Step 4: Click on "Select Village" and type the village name
     Sleep(500)
-    Send("tehang")
+    Send(VillageName)
     Sleep(500)
     Send("{Enter}")
     Sleep(2000)
@@ -308,25 +344,23 @@ result := MsgBox("Batch ${batchIndex + 1} of ${totalBatches}\\n\\nProcessing ${
     ; Step 5: Process all Tag IDs one by one
     for index, tagID in TagIDs {
         ; Double-click at specified coordinates to focus on tag field
-        Click(1200, 542)
+        Click(1655, 599)
         Sleep(500)
 
      if (tagID = "${tagIDs[1]}") {
-        Click(1238, 775)
+        Click(1497, 851)
         Sleep(300)
         Send("{Down 2}")
         Send("{Enter}")
         Sleep(300)
-        Click(1200, 542)
+        Click(1655, 599)
         Sleep(500)
     }
 
         ; Clear the field
         Send("^a")
         Sleep(200)
-        Send("{Del}")
-        Sleep(300)
-
+        
         ; Enter current tag ID
         Send(tagID)
         Sleep(300)
@@ -342,23 +376,23 @@ result := MsgBox("Batch ${batchIndex + 1} of ${totalBatches}\\n\\nProcessing ${
         ; Show progress
         ToolTip("Batch ${
           batchIndex + 1
-        }/${totalBatches}\\nTag " index "/" TagIDs.Length "\\n" tagID)
+        }/${totalBatches}\\nVillage: " VillageName "\\nTag " index "/" TagIDs.Length "\\n" tagID)
         Sleep(500)
         ToolTip()
     }
 
     ; After finishing all tags - Press Tab 3 times then Space
     Send("{Tab 2}")
-    Sleep(800)
+    Sleep(300)
     Send("{Space}")
-    Sleep(400)
+    Sleep(200)
 
     ; Repeat Tab + Space for the same number of tags in the array
     loop TagIDs.Length - 2 {
         Send("{Tab}")
-        Sleep(200)
+        Sleep(100)
         Send("{Space}")
-        Sleep(200)
+        Sleep(100)
 
         ; Show progress for the Tab+Space sequence
         ToolTip("Tab+Space sequence: " A_Index "/" (TagIDs.Length - 2))

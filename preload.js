@@ -1,8 +1,8 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  runAutohotkeyScript: (tagIDs) =>
-    ipcRenderer.invoke("run-autohotkey-script", tagIDs),
+  runAutohotkeyScript: (tagIDs, villageName) =>
+    ipcRenderer.invoke("run-autohotkey-script", tagIDs, villageName),
   stopAutohotkeyScript: () => ipcRenderer.invoke("stop-autohotkey-script"),
   checkAutoHotkey: () => ipcRenderer.invoke("check-autohotkey"),
   manualSubmissionComplete: () =>
