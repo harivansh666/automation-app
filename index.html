@@ -12,6 +12,24 @@
         <h1>Vaccination Form Automation</h1>
         <p>Enter Tag IDs and run the AutoHotkey script</p>
       </header>
+      <!-- Add this button near your other buttons in index.html -->
+
+      <div class="check-script">
+        <button class="checkScriptButton">Check Script</button>
+        <button id="generateNewScriptBtn" class="btn btn-secondary">
+          Generate New Script Template
+        </button>
+      </div>
+
+      <!-- village -->
+      <div class="village-div">
+        <label for="villageInput">Village Name:</label>
+        <input
+          type="text"
+          id="villageInput"
+          placeholder="Enter village name (e.g., tehang)"
+        />
+      </div>
 
       <div class="input-section">
         <div class="form-group">
@@ -49,7 +67,69 @@
           <li>
             The script will automatically fill the form for all provided Tag IDs
           </li>
+          <li>Click "Check Script" to view and modify the AutoHotkey script</li>
         </ul>
+      </div>
+    </div>
+
+    <!-- Script Editor Modal -->
+    <div id="scriptModal" class="script-modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>AutoHotkey Script Editor</h3>
+          <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="script-info">
+            <p><strong>Batch:</strong> <span id="currentBatchInfo">1</span></p>
+            <p><strong>Status:</strong> <span id="scriptStatus">Ready</span></p>
+          </div>
+          <textarea
+            id="scriptEditor"
+            rows="50"
+            cols="20"
+            placeholder="AutoHotkey script will appear here..."
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button id="reloadScriptBtn" class="btn btn-secondary">
+            Reload Original
+          </button>
+          <button id="saveScriptBtn" class="btn btn-primary">
+            Save Changes
+          </button>
+          <button id="closeScriptBtn" class="btn btn-danger">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual Submission Dialog -->
+    <div id="submissionDialog" class="submission-dialog hidden">
+      <div class="dialog-content">
+        <div class="dialog-icon">⚠️</div>
+        <h3>Manual Submission Required</h3>
+        <div class="submission-info" id="submissionInfo"></div>
+        <div class="instructions">
+          <p><strong>Please follow these steps:</strong></p>
+          <ol>
+            <li>Go to the vaccination form website</li>
+            <li>Review the 25 tags that were just processed</li>
+            <li>
+              Click the <strong>SUBMIT</strong> or <strong>SAVE</strong> button
+            </li>
+            <li>Wait for confirmation that submission was successful</li>
+            <li>Return to this application</li>
+          </ol>
+        </div>
+        <p class="ready-text">Ready to process the next batch?</p>
+        <div class="dialog-buttons">
+          <button id="submissionCompleteBtn" class="btn btn-primary">
+            Yes, I Submitted - Continue Next Batch
+          </button>
+          <button id="cancelBatchBtn" class="btn btn-danger">
+            Stop Processing
+          </button>
+        </div>
       </div>
     </div>
 

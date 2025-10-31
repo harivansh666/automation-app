@@ -1,6 +1,7 @@
 ; AutoHotkey v2 Script for Vaccination Form Automation
-; Batch 1 of 2 - 25 tags
-; Village: tehang
+; Batch 1 of 1 - 6 tags
+; MODIFIED SCRIPT - This script will be used for all future runs
+; Village: banga
 ; Updated with Campaign selection and Village selection
 
 ; Single instance - prevent multiple runs
@@ -11,35 +12,16 @@ IsRunning := false
 
 ; Array of Tag IDs from user input
 TagIDs := [
-    "102294708797",
-    "102294708798",
-    "102294708799",
-    "102294708800",
-    "102294708801",
-    "102294708802",
-    "102294708803",
-    "102294708804",
-    "102294708805",
-    "102294708806",
-    "102294708807",
-    "102294708808",
-    "102294708809",
-    "102294708810",
-    "102294708811",
-    "102294708812",
-    "102294708813",
-    "102294708814",
-    "102294708815",
-    "102294708816",
-    "102294708817",
-    "102294708818",
-    "102294708819",
-    "102294708820",
-    "102294708821"
+"102294708841",
+ "102294708842",
+ "102294708843",
+ "102294708844",
+ "102294708845",
+ "102294708846"
 ]
 
 ; Village name from user input
-VillageName := "tehang"
+VillageName := "banga"
 
 ; Main automation function
 RunAutomation() {
@@ -65,11 +47,11 @@ RunAutomation() {
     Sleep(2000)
 
     ; Step 1: Click on Campaign radio button (instead of "Without Campaign")
-    Click(245, 254)
+    Click(218, 239)
     Sleep(1000)
 
     ; Step 3: Click on "FMD ROUND 6 JAL" and select it
-    Click(585, 337)
+    Click(580, 307)
     Sleep(500)
     Send("{Tab 1}")
 

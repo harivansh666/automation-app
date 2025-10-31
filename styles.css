@@ -251,49 +251,238 @@ textarea:focus {
   text-align: center;
 }
 
-/* Continue Dialog Styles */
-.continue-dialog {
+/* Village Input Styles */
+#villageInput {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+#villageInput:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+label[for="villageInput"] {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1em;
+}
+
+.village-div {
+  padding: 30px;
+  padding-bottom: 0;
+}
+
+.check-script {
+  padding: 20px 30px 0;
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.checkScriptButton {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.checkScriptButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* Script Editor Modal */
+.script-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.continue-dialog.hidden {
+.script-modal.hidden {
   display: none;
 }
 
-.continue-dialog .dialog-content {
+.script-modal .modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #7f8c8d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-modal:hover {
+  color: #e74c3c;
+}
+
+.modal-body {
+  padding: 10px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.script-info {
+  background: #f8f9fa;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  border-left: 4px solid #3498db;
+}
+
+.script-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+#scriptStatus.success {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+#scriptStatus.error {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+#scriptEditor {
+  width: 100%;
+  height: 20px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: vertical;
+  background: #fcfcfc;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  background: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.modal-footer .btn {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+/* Submission Dialog Styles */
+.submission-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.submission-dialog.hidden {
+  display: none;
+}
+
+.submission-dialog .dialog-content {
   background: white;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-width: 400px;
+  max-width: 500px;
   width: 90%;
   text-align: center;
 }
 
-.continue-dialog h3 {
-  color: #2c3e50;
+.dialog-icon {
+  font-size: 48px;
   margin-bottom: 15px;
 }
 
-.batch-info {
-  background: #e8f4fd;
+.submission-info {
+  background: #fff3cd;
   padding: 15px;
   border-radius: 6px;
   margin-bottom: 20px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #ffc107;
+  text-align: left;
 }
 
-.batch-info p {
+.submission-info p {
   margin: 5px 0;
+}
+
+.important-note {
+  background: #f8d7da;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  border-left: 4px solid #dc3545;
+}
+
+.ready-text {
+  margin: 20px 0;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
 .dialog-buttons {
@@ -306,7 +495,7 @@ textarea:focus {
   min-width: 120px;
 }
 
-/* Responsive design */
+/* Responsive design for dialogs */
 @media (max-width: 768px) {
   .dialog-buttons {
     flex-direction: column;
@@ -315,4 +504,104 @@ textarea:focus {
   .dialog-buttons .btn {
     min-width: auto;
   }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+}
+
+.modified-script {
+  border: 2px solid #f39c12;
+  background-color: #fef9e7;
+}
+
+.script-status.warning {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+.script-status.success {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+#generateNewScriptBtn {
+  background-color: #95a5a6;
+  color: white;
+}
+
+#generateNewScriptBtn:hover {
+  background-color: #7f8c8d;
+}
+/* Add these styles to your existing styles.css */
+
+.modified-script {
+  border: 2px solid #f39c12 !important;
+  background-color: #fef9e7 !important;
+}
+
+.btn-warning {
+  background-color: #f39c12 !important;
+  border-color: #e67e22 !important;
+}
+
+.btn-warning:hover {
+  background-color: #e67e22 !important;
+}
+
+.script-status.warning {
+  color: #e67e22;
+  font-weight: bold;
+  background-color: #fdebd0;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.script-status.success {
+  color: #27ae60;
+  font-weight: bold;
+  background-color: #d5f4e6;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.batch-progress {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  border-left: 4px solid #3498db;
+}
+
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.batch-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #ecf0f1;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3498db, #2980b9);
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.batch-details {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #7f8c8d;
 }
