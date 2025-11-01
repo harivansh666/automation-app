@@ -1,7 +1,7 @@
 {
-  "name": "vaccination-automation",
+  "name": "vaccination-automation-v2",
   "version": "1.0.0",
-  "description": "AutoHotkey Script Runner for Vaccination Forms",
+  "description": "AutoHotkey Script Runner for Vaccination Forms v2",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
