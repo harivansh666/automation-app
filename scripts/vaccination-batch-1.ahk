@@ -1,6 +1,7 @@
 ; AutoHotkey v2 Script for Vaccination Form Automation
-; Batch 1 of 2 - 25 tags
-; Village: tehang
+; Batch 1 of 1 - 25 tags
+; MODIFIED SCRIPT - This script will be used for all future runs
+; Village: par
 ; Updated with Campaign selection and Village selection
 
 ; Single instance - prevent multiple runs
@@ -11,35 +12,35 @@ IsRunning := false
 
 ; Array of Tag IDs from user input
 TagIDs := [
-    "102294708797",
-    "102294708798",
-    "102294708799",
-    "102294708800",
-    "102294708801",
-    "102294708802",
-    "102294708803",
-    "102294708804",
-    "102294708805",
-    "102294708806",
-    "102294708807",
-    "102294708808",
-    "102294708809",
-    "102294708810",
-    "102294708811",
-    "102294708812",
-    "102294708813",
-    "102294708814",
-    "102294708815",
-    "102294708816",
-    "102294708817",
-    "102294708818",
-    "102294708819",
-    "102294708820",
-    "102294708821"
+"102294998162",
+ "130003374941",
+ "102294994135",
+ "130003374314",
+ "102294998116",
+ "130003374121",
+ "102294997900",
+ "102294998036",
+ "102294997578",
+ "102294995721",
+ "102295001291",
+ "102294996017",
+ "130003374462",
+ "102294997660",
+ "130003374393",
+ "102294993520",
+ "102295001280",
+ "130003207738",
+ "130003374427",
+ "102294997487",
+ "130003374416",
+ "102294996291",
+ "102294996198",
+ "102294995696",
+ "102295001187"
 ]
 
 ; Village name from user input
-VillageName := "tehang"
+VillageName := "par"
 
 ; Main automation function
 RunAutomation() {
@@ -65,13 +66,17 @@ RunAutomation() {
     Sleep(2000)
 
     ; Step 1: Click on Campaign radio button (instead of "Without Campaign")
-    Click(245, 254)
+    Click(245, 255)
     Sleep(1000)
-
-    ; Step 3: Click on "FMD ROUND 6 JAL" and select it
-    Click(585, 337)
+    
+    Click(247, 286)
     Sleep(500)
-    Send("{Tab 1}")
+ 
+    ; Step 3: Click on "FMD ROUND 6 JAL" and select it
+    Click(690, 338)
+    Sleep(500)
+    Send("{Tab 2}")
+   
 
     ; Step 4: Click on "Select Village" and type the village name
     Sleep(500)
@@ -89,13 +94,13 @@ RunAutomation() {
         Click(1294, 547)
         Sleep(500)
 
-     if (tagID = "102294708798") {
-        Click(1227, 774)
+     if (tagID = TagIDs[2]) {
+        Click(1526, 775)
         Sleep(300)
         Send("{Down 2}")
         Send("{Enter}")
         Sleep(300)
-        Click(1294, 547)
+        Click(1622, 546)
         Sleep(500)
     }
 
