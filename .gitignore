@@ -1,3 +1,11 @@
 node_modules
 .env
-/dist
+dist/
+
+out/
+release/
+*-unpacked/
+*.exe
+*.AppImage
+*.snap
+node_modules/
